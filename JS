@@ -1,0 +1,90 @@
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('registrationButton').addEventListener('click', function() {
+    goToRegistration();
+  });
+
+  document.getElementById('searchButton').addEventListener('click', function() {
+    search();
+  });
+
+  document.getElementById('completeButton').addEventListener('click', function() {
+    completeRegistration();
+  });
+
+  document.getElementById('returnButton1').addEventListener('click', function() {
+    goToPage1();
+  });
+
+  document.getElementById('returnButton2').addEventListener('click', function() {
+    goToPage1();
+  });
+});
+
+// Simple data store object
+const dataStore = {};
+
+function goToRegistration() {
+  document.getElementById('page1').style.display = 'none';
+  document.getElementById('page2').style.display = 'block';
+
+  // Reset input fields
+  document.getElementById('nameInput').value = '';
+  document.getElementById('codeInput').value = '';
+}
+
+function goToSearch() {
+  document.getElementById('page1').style.display = 'none';
+  document.getElementById('page3').style.display = 'block';
+
+  // Reset input fields
+  document.getElementById('searchCodeInput').value = '';
+
+  // Clear previous search result
+  document.getElementById('searchResult').innerText = '';
+}
+
+function goToPage1() {
+  document.getElementById('page2').style.display = 'none';
+  document.getElementById('page3').style.display = 'none';
+  document.getElementById('page1').style.display = 'block';
+}
+
+function completeRegistration() {
+  const name = document.getElementById('nameInput').value;
+  const code = document.getElementById('codeInput').value;
+
+  // Store the relation between name and code in the data store
+  dataStore[code] = name;
+
+  // Save data to local storage
+  saveToLocalStorage(code, name);
+
+  // For simplicity, let's just display an alert
+  alert(`Registration complete:\nΦΑΤΝΩΜΑ: ${name}\nCODE: ${code}`);
+
+  goToPage1();
+}
+
+function search() {
+  const searchCode = document.getElementById('searchCodeInput').value;
+
+  // Retrieve the name associated with the code from the data store
+  const resultText = dataStore[searchCode];
+
+  // Display the result in the searchResult div
+  document.getElementById('searchResult').innerText = `Result for CODE ${searchCode}:\nΦΑΤΝΩΜΑ: ${resultText || 'Not found'}`;
+}
+
+// Define a function to save data to local storage
+function saveToLocalStorage(code, name) {
+  const registrations = JSON.parse(localStorage.getItem('registrations')) || {};
+  registrations[code] = name;
+  localStorage.setItem('registrations', JSON.stringify(registrations));
+}
+
+// Define a function to search data in local storage
+function searchInLocalStorage(searchCode) {
+  const registrations = JSON.parse(localStorage.getItem('registrations')) || {};
+  const resultText = registrations[searchCode] || 'Not found';
+  document.getElementById('searchResult').innerText = `Result for CODE ${searchCode}:\nΦΑΤΝΩΜΑ: ${resultText}`;
+}
